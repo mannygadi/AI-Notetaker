@@ -14,15 +14,23 @@ struct PersistenceController {
     static let preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
-        for _ in 0..<10 {
-            let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
+
+        // Create sample notes for preview
+        let sampleNotes: [(NoteType, String, String)] = [
+            (.audio, "Meeting Recording", "Recorded discussion about project milestones"),
+            (.text, "Quick Note", "Remember to follow up with client"),
+            (.pdf, "Project Report", "Uploaded quarterly report for review"),
+            (.webLink, "YouTube Tutorial", "SwiftUI tutorial for beginners")
+        ]
+
+        for (type, title, content) in sampleNotes {
+            let note = Note(context: viewContext, type: type, title: title)
+            note.content = content
         }
+
         do {
             try viewContext.save()
         } catch {
-            // Replace this implementation with code to handle the error appropriately.
-            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
             let nsError = error as NSError
             fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
         }
