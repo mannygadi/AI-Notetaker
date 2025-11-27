@@ -6,41 +6,31 @@
 //
 
 import SwiftUI
-import CoreData
 
 struct MainView: View {
     @Environment(\.managedObjectContext) private var viewContext
 
     // Filter state
-    @State private var selectedFilter: NoteType? = nil
+    @State private var selectedFilter: NoteType?
     @State private var searchText: String = ""
-    @State private var showingAudioRecording = false
 
-    // Fetch request with filtering
+    // Sheet presentation states
+    @State private var showingAudioRecording = false
+    @State private var showingTextNote = false
+    @State private var showingFileUpload = false
+    @State private var showingWebLink = false
+
+    // Fetch request for all notes
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Note.timestamp, ascending: false)],
-        animation: .default
-    )
-    private var allNotes: FetchedResults<Note>
+        sortDescriptors: [NSSortDescriptor(keyPath: \Note.createdAt, ascending: false)],
+        animation: .default)
+    private var notes: FetchedResults<Note>
 
     private var filteredNotes: [Note] {
-        var notes = Array(allNotes)
-
-        // Apply note type filter
-        if let filter = selectedFilter {
-            notes = notes.filter { $0.noteTypeEnum == filter }
+        if let selectedFilter = selectedFilter {
+            return notes.filter { $0.noteType == selectedFilter }
         }
-
-        // Apply search filter
-        if !searchText.isEmpty {
-            notes = notes.filter { note in
-                (note.title?.localizedCaseInsensitiveContains(searchText) ?? false) ||
-                (note.content?.localizedCaseInsensitiveContains(searchText) ?? false) ||
-                (note.fileName?.localizedCaseInsensitiveContains(searchText) ?? false)
-            }
-        }
-
-        return notes
+        return Array(notes)
     }
 
     var body: some View {
@@ -48,60 +38,48 @@ struct MainView: View {
             // Sidebar with filters
             SidebarView(
                 selectedFilter: $selectedFilter,
-                notesCount: allNotes.count
+                notesCount: notes.count,
+                onAddNote: { noteType in
+                    handleAddNote(noteType)
+                }
             )
-                .navigationSplitViewColumnWidth(min: 200, ideal: 250)
-        } content: {
-            // Note list
-            NoteListView(
-                notes: filteredNotes,
-                selectedFilter: selectedFilter,
-                searchText: $searchText
-            )
-                .navigationSplitViewColumnWidth(min: 300, ideal: 400)
         } detail: {
             // Detail view for selected note
-            Text("Select a note to View details")
-                .foregroundColor(.secondary)
-        }
-        .navigationTitle("AI Note Taker")
-        .audioRecordingSheet(isPresented: $showingAudioRecording) { _ in
-            // Recording is handled within the sheet itself
-        }
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Menu {
-                    ForEach(NoteType.allCases) { noteType in
-                        Button {
-                            addNewNote(of: noteType)
-                        } label: {
-                            Label("Add \(noteType.displayName)", systemImage: noteType.systemImage)
-                        }
-                    }
-                } label: {
-                    Image(systemName: "plus")
-                        .font(.title2)
+            if let selectedNote = filteredNotes.first {
+                NoteDetailView(note: selectedNote)
+            } else {
+                VStack {
+                    Text("No notes found")
+                        .font(.title)
+                        .foregroundColor(.secondary)
+
+                    Text("Tap the + button to create your first note")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .padding(.top, 8)
                 }
             }
+        }
+        .sheet(isPresented: $showingAudioRecording) {
+            AudioRecordingView()
+                .environment(\.managedObjectContext, viewContext)
+        }
+        .sheet(isPresented: $showingTextNote) {
+            TextNoteSheet()
+                .environment(\.managedObjectContext, viewContext)
         }
     }
 
-    private func addNewNote(of type: NoteType) {
-        if type == .audio {
-            // Show audio recording sheet
+    private func handleAddNote(_ noteType: NoteType) {
+        switch noteType {
+        case .audio:
             showingAudioRecording = true
-        } else {
-            // Create other note types directly
-            withAnimation {
-                let newNote = Note(context: viewContext, type: type, title: "New \(type.displayName) Note")
-
-                do {
-                    try viewContext.save()
-                } catch {
-                    let nsError = error as NSError
-                    print("Error saving note: \(nsError)")
-                }
-            }
+        case .text:
+            showingTextNote = true
+        case .pdf:
+            showingFileUpload = true
+        case .webLink:
+            showingWebLink = true
         }
     }
 }

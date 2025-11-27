@@ -11,7 +11,7 @@ struct SidebarView: View {
     @Binding var selectedFilter: NoteType?
     let notesCount: Int
 
-    var body: some View {
+    let onAddNote: (NoteType) -> Void
 
     var body: some View {
         VStack(spacing: 0) {
@@ -60,17 +60,18 @@ struct SidebarView: View {
 
                 // Divider
                 Divider()
-                    .padding(.vertical, 4)
+                .padding(.vertical, 4)
 
                 // Note type filters
                 ForEach(NoteType.allCases) { noteType in
                     NoteTypeFilterRow(
                         noteType: noteType,
                         isSelected: selectedFilter == noteType,
-                        onAddNote: onAddNote
+                        onAddNote: { onAddNote(noteType) }
                     )
                 .tag(Optional(noteType))
             }
+        }
         }
         .listStyle(SidebarListStyle())
         .navigationTitle("Filters")
