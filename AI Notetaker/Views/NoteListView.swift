@@ -14,6 +14,8 @@ struct NoteListView: View {
     @Binding var searchText: String
     @Environment(\.managedObjectContext) private var viewContext
 
+    @State private var showingAudioRecording = false
+
     var body: some View {
         VStack(spacing: 0) {
             // Search bar
@@ -56,6 +58,9 @@ struct NoteListView: View {
             }
         }
         .navigationTitle(navigationTitle)
+        .audioRecordingSheet(isPresented: $showingAudioRecording) { _ in
+            // Recording is handled within the sheet itself
+        }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Menu {
@@ -95,15 +100,19 @@ struct NoteListView: View {
     }
 
     private func addNote(of type: NoteType) {
-        withAnimation {
-            let newNote = Note(context: viewContext, type: type)
+        if type == .audio {
+            showingAudioRecording = true
+        } else {
+            withAnimation {
+                let newNote = Note(context: viewContext, type: type)
 
-            do {
-                try viewContext.save()
-            } catch {
-                let nsError = error as NSError
-                // Replace with proper error handling
-                print("Error saving context: \(nsError)")
+                do {
+                    try viewContext.save()
+                } catch {
+                    let nsError = error as NSError
+                    // Replace with proper error handling
+                    print("Error saving context: \(nsError)")
+                }
             }
         }
     }

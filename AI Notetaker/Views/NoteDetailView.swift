@@ -62,13 +62,8 @@ struct NoteDetailView: View {
     @ViewBuilder
     private var audioContentView: some View {
         VStack(alignment: .leading, spacing: 15) {
-            if note.duration > 0 {
-                HStack {
-                    Image(systemName: "clock")
-                    Text("Duration: \(note.duration, specifier: "%.0f") seconds")
-                        .font(.subheadline)
-                }
-            }
+            // Audio player
+            AudioPlayerView(note: note)
 
             if let transcription = note.transcription, !transcription.isEmpty {
                 VStack(alignment: .leading) {
