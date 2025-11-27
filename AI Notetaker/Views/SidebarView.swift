@@ -35,7 +35,8 @@ struct SidebarView: View {
             ForEach(NoteType.allCases) { noteType in
                 NoteTypeFilterRow(
                     noteType: noteType,
-                    isSelected: selectedFilter == noteType
+                    isSelected: selectedFilter == noteType,
+                    onAddNote: onAddNote
                 )
                 .tag(Optional(noteType))
             }
