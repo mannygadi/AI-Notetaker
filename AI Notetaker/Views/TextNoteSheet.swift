@@ -16,7 +16,6 @@ struct TextNoteSheet: View {
         NavigationView {
             TextNoteView()
                 .environment(\.managedObjectContext, viewContext)
-                .environment(\.dismiss, dismiss)
         }
         .presentationDetents([.medium, .large])
         .presentationDragIndicator(.visible)

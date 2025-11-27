@@ -22,13 +22,13 @@ struct MainView: View {
 
     // Fetch request for all notes
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Note.createdAt, ascending: false)],
+        sortDescriptors: [NSSortDescriptor(keyPath: \Note.timestamp, ascending: false)],
         animation: .default)
     private var notes: FetchedResults<Note>
 
     private var filteredNotes: [Note] {
         if let selectedFilter = selectedFilter {
-            return notes.filter { $0.noteType == selectedFilter }
+            return notes.filter { $0.noteTypeEnum == selectedFilter }
         }
         return Array(notes)
     }
