@@ -14,6 +14,7 @@ struct MainView: View {
     // Filter state
     @State private var selectedFilter: NoteType? = nil
     @State private var searchText: String = ""
+    @State private var showingAudioRecording = false
 
     // Fetch request with filtering
     @FetchRequest(
@@ -60,9 +61,47 @@ struct MainView: View {
                 .navigationSplitViewColumnWidth(min: 300, ideal: 400)
         } detail: {
             // Detail view for selected note
-            Text("Select a note to view details")
+            Text("Select a note to View details")
                 .foregroundColor(.secondary)
         }
         .navigationTitle("AI Note Taker")
+        .audioRecordingSheet(isPresented: $showingAudioRecording) { _ in
+            // Recording is handled within the sheet itself
+        }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Menu {
+                    ForEach(NoteType.allCases) { noteType in
+                        Button {
+                            addNewNote(of: noteType)
+                        } label: {
+                            Label("Add \(noteType.displayName)", systemImage: noteType.systemImage)
+                        }
+                    }
+                } label: {
+                    Image(systemName: "plus")
+                        .font(.title2)
+                }
+            }
+        }
+    }
+
+    private func addNewNote(of type: NoteType) {
+        if type == .audio {
+            // Show audio recording sheet
+            showingAudioRecording = true
+        } else {
+            // Create other note types directly
+            withAnimation {
+                let newNote = Note(context: viewContext, type: type, title: "New \(type.displayName) Note")
+
+                do {
+                    try viewContext.save()
+                } catch {
+                    let nsError = error as NSError
+                    print("Error saving note: \(nsError)")
+                }
+            }
+        }
     }
 }
