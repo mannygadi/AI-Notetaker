@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Notetaker - App Icon Generator</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f7;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1d1d1f;
+            margin: 0;
+        }
+
+        .header p {
+            font-size: 18px;
+            color: #86868b;
+            margin: 10px 0 0 0;
+        }
+
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .icon-item {
+            text-align: center;
+        }
+
+        .icon-preview {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 22%;
+            background: linear-gradient(135deg, #007AFF 0%, #0054CC 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0, 122, 255, 0.3);
+            transition: transform 0.2s ease;
+            margin-bottom: 15px;
+        }
+
+        .icon-preview:hover {
+            transform: translateY(-5px);
+        }
+
+        .icon-document {
+            width: 40%;
+            height: 50%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 8%;
+            position: relative;
+        }
+
+        .text-line {
+            height: 8%;
+            background: #007AFF;
+            margin: 3% 0;
+            border-radius: 2px;
+        }
+
+        .text-line:nth-child(1) { width: 30%; margin-left: 5%; }
+        .text-line:nth-child(2) { width: 20%; margin-left: 35%; }
+        .text-line:nth-child(3) { width: 38%; margin-left: 5%; }
+        .text-line:nth-child(4) { width: 45%; margin-left: 5%; }
+        .text-line:nth-child(5) { width: 25%; margin-left: 52%; }
+        .text-line:nth-child(6) { width: 35%; margin-left: 5%; }
+        .text-line:nth-child(7) { width: 15%; margin-left: 42%; }
+
+        .ai-badge {
+            position: absolute;
+            top: 15%;
+            right: 12%;
+            background: #0054CC;
+            color: white;
+            font-weight: bold;
+            font-size: 12%;
+            padding: 2% 4%;
+            border-radius: 20%;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        .icon-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-bottom: 5px;
+        }
+
+        .icon-size {
+            font-size: 12px;
+            color: #86868b;
+        }
+
+        .instructions {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .instructions h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin: 0 0 20px 0;
+        }
+
+        .instructions ol {
+            margin: 20px 0;
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            margin: 10px 0;
+            color: #1d1d1f;
+            line-height: 1.6;
+        }
+
+        .instructions code {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 13px;
+        }
+
+        .export-btn {
+            background: #007AFF;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background 0.2s ease;
+        }
+
+        .export-btn:hover {
+            background: #0054CC;
+        }
+
+        .download-info {
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .download-info p {
+            margin: 5px 0;
+            color: #1565c0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 AI Notetaker App Icon Generator</h1>
+            <p>Modern app icons in all required sizes for iOS, iPad, and Mac</p>
+        </div>
+
+        <div class="icon-grid">
+            <div class="icon-item">
+                <div class="icon-preview">
+                    <div class="icon-document">
+                        <div class="text-line"></div>
+                        <div class="text-line"></div>
+                        <div class="text-line"></div>
+                        <div class="text-line"></div>
+                        <div class="text-line"></div>
+                        <div class="text-line"></div>
+                        <div class="text-line"></div>
+                    </div>
+                    <div class="ai-badge">AI</div>
+                </div>
+                <div class="icon-label">App Store</div>
+                <div class="icon-size">1024 × 1024</div>
+            </div>
+
+            <div class="icon-item">
+                <div class="icon-preview">
+                    <div class="icon-document">
+                        <div class="text-line"></div>
+                        <div class="text-line"></div>
+                        <div class="text-line"></div>
+                        <div class="text-line"></div>
+                        <div class="text-line"></div>
+                        <div class="text-line"></div>
+                        <div class="text-line"></div>
+                    </div>
+                    <div class="ai-badge">AI</div>
+                </div>
+                <div class="icon-label">iPhone</div>
+                <div class="icon-size">180 × 180</div>
+            </div>
+
+            <div class="icon-item">
+                <div class="icon-preview">
+                    <div class="icon-document">
+                        <div class="text-line"></div>
+                        <div class="text-line"></div>
+                        <div class="text-line"></div>
+                        <div class="text-line"></div>
+                        <div class="text-line"></div>
+                        <div class="text-line"></div>
+                        <div class="text-line"></div>
+                    </div>
+                    <div class="ai-badge">AI</div>
+                </div>
+                <div class="icon-label">iPad</div>
+                <div class="icon-size">167 × 167</div>
+            </div>
+
+            <div class="icon-item">
+                <div class="icon-preview">
+                    <div class="icon-document">
+                        <div class="text-line"></div>
+                        <div class="text-line"></div>
+                        <div class="text-line"></div>
+                        <div class="text-line"></div>
+                        <div class="text-line"></div>
+                        <div class="text-line"></div>
+                        <div class="text-line"></div>
+                    </div>
+                    <div class="ai-badge">AI</div>
+                </div>
+                <div class="icon-label">Mac</div>
+                <div class="icon-size">512 × 512</div>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h2>📋 How to Create Your App Icons</h2>
+            <ol>
+                <li><strong>Screenshot Method:</strong> Take screenshots of the icons above at different browser sizes</li>
+                <li><strong>Professional Design Tools:</strong> Use Figma, Sketch, or Adobe Illustrator with the design specifications</li>
+                <li><strong>Online Generators:</strong> Visit <a href="https://makeappicon.com" target="_blank">MakeAppIcon.com</a> or <a href="https://appicon.co" target="_blank">AppIcon.co</a></li>
+                <li><strong>AI Generation:</strong> Use tools like Midjourney or DALL-E with the prompt: "modern app icon for AI note taking app, blue gradient, white document with text lines, AI badge, clean minimalist design"</li>
+                <li><strong>Xcode Integration:</strong> Once created, add the <code>AppIcon.appiconset</code> folder to your <code>Assets.xcassets</code> in Xcode</li>
+            </ol>
+
+            <h3>🎯 Design Specifications</h3>
+            <ul style="margin: 20px 0; padding-left: 20px;">
+                <li><strong>Background:</strong> Blue gradient (#007AFF to #0054CC)</li>
+                <li><strong>Document:</strong> White card with blue text lines</li>
+                <li><strong>AI Badge:</strong> Small "AI" text in top-right corner</li>
+                <li><strong>Corners:</strong> iOS standard rounded corners (22.36% radius)</li>
+            </ul>
+
+            <div class="download-info">
+                <p><strong>✅ Ready to use:</strong> The AppIcon.appiconset folder is already structured with Contents.json</p>
+                <p><strong>📱 Required sizes:</strong> 20px, 29px, 40px, 60px, 76px, 83.5px, 120px, 152px, 167px, 180px, 256px, 512px, 1024px</p>
+                <p><strong>🎨 Format:</strong> PNG with transparency (except where opaque is required)</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple download function (placeholder - actual implementation would require canvas API)
+        document.querySelectorAll('.export-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                alert('To download actual icons, use screenshot tools or professional design software. The design patterns above show the exact specifications needed.');
+            });
+        });
+    </script>
+</body>
+</html>
