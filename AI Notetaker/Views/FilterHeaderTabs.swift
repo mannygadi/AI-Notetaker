@@ -10,7 +10,7 @@ import SwiftUI
 struct FilterHeaderTabs: View {
     @Binding var selectedFilter: NoteFilterType
     @Binding var selectedFolder: String
-    @State private var searchText: String = ""
+    @Binding var searchText: String
     @State private var showingFolderCreateScreen = false
     let notes: [Note]
 
@@ -19,10 +19,12 @@ struct FilterHeaderTabs: View {
 
     init(selectedFilter: Binding<NoteFilterType>,
          selectedFolder: Binding<String>,
+         searchText: Binding<String>,
          notes: [Note],
          onCreateFolder: @escaping (String) -> Void) {
         self._selectedFilter = selectedFilter
         self._selectedFolder = selectedFolder
+        self._searchText = searchText
         self.notes = notes
         self.onCreateFolder = onCreateFolder
     }
@@ -107,6 +109,31 @@ struct FilterHeaderTabs: View {
             .padding(.horizontal, DesignTokens.Spacing.lg)
             .padding(.top, DesignTokens.Spacing.sm)
             .padding(.bottom, DesignTokens.Spacing.md)
+
+            // Search bar
+            HStack(spacing: DesignTokens.Spacing.sm) {
+                Image(systemName: "magnifyingglass")
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundColor(DesignTokens.Colors.tertiaryText)
+
+                TextField("Search notes...", text: $searchText)
+                    .font(DesignTokens.Typography.body)
+                    .textFieldStyle(PlainTextFieldStyle())
+
+                if !searchText.isEmpty {
+                    Button(action: {
+                        searchText = ""
+                    }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.system(size: 16))
+                            .foregroundColor(DesignTokens.Colors.tertiaryText)
+                    }
+                    .transition(.opacity.combined(with: .scale))
+                }
+            }
+            .padding(.horizontal, DesignTokens.Spacing.md)
+            .padding(.vertical, DesignTokens.Spacing.sm)
+            .modernTextField()
 
             // Filter tabs
             ScrollView(.horizontal, showsIndicators: false) {
@@ -226,6 +253,7 @@ struct FilterTab: View {
         FilterHeaderTabs(
             selectedFilter: .constant(.all),
             selectedFolder: .constant("Default"),
+            searchText: .constant(""),
             notes: [],
             onCreateFolder: { folderName in
                 print("Creating folder: \(folderName)")

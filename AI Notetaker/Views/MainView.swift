@@ -24,6 +24,7 @@ struct MainView: View {
     // Filter and folder state
     @State private var selectedFilter: NoteFilterType = .all
     @State private var selectedFolder: String = "Default"
+    @State private var searchText: String = ""
 
     // Fetch request for all notes
     @FetchRequest(
@@ -31,18 +32,36 @@ struct MainView: View {
         animation: .default)
     private var notes: FetchedResults<Note>
 
-    // Computed filtered notes based on selected filter
+    // Computed filtered notes based on selected filter and search text
     private var filteredNotes: [Note] {
+        var filtered = Array(notes)
+
+        // Apply filter type
         switch selectedFilter {
         case .all:
-            return Array(notes)
+            break
         case .audio:
-            return notes.filter { $0.noteTypeEnum == .audio }
+            filtered = filtered.filter { $0.noteTypeEnum == .audio }
         case .document:
-            return notes.filter { $0.noteTypeEnum == .pdf }
+            filtered = filtered.filter { $0.noteTypeEnum == .pdf }
         case .link:
-            return notes.filter { $0.noteTypeEnum == .webLink }
+            filtered = filtered.filter { $0.noteTypeEnum == .webLink }
         }
+
+        // Apply search filter
+        if !searchText.isEmpty {
+            filtered = filtered.filter { note in
+                if let title = note.title?.lowercased() {
+                    return title.contains(searchText.lowercased())
+                }
+                if let content = note.content?.lowercased() {
+                    return content.contains(searchText.lowercased())
+                }
+                return false
+            }
+        }
+
+        return filtered
     }
 
     var body: some View {
@@ -56,6 +75,7 @@ struct MainView: View {
                             FilterHeaderTabs(
                                 selectedFilter: $selectedFilter,
                                 selectedFolder: $selectedFolder,
+                                searchText: $searchText,
                                 notes: Array(notes),
                                 onCreateFolder: { folderName in
                                     // Create folder and update selected folder
@@ -66,7 +86,7 @@ struct MainView: View {
                             // Filtered notes section
                             if !filteredNotes.isEmpty {
                                 VStack(alignment: .leading, spacing: DesignTokens.Spacing.md) {
-                                    Text("All Notes")
+                                    Text(searchText.isEmpty ? "All Notes" : "Search Results")
                                         .font(DesignTokens.Typography.headline)
                                         .padding(.horizontal, DesignTokens.Spacing.lg)
 
@@ -86,6 +106,46 @@ struct MainView: View {
                                     .modernCard()
                                     .padding(.horizontal, DesignTokens.Spacing.lg)
                                 }
+                            } else if !notes.isEmpty {
+                                // No search results state
+                                VStack(spacing: DesignTokens.Spacing.lg) {
+                                    Image(systemName: "magnifyingglass")
+                                        .font(.system(size: 48))
+                                        .foregroundColor(DesignTokens.Colors.tertiaryText)
+
+                                    VStack(spacing: DesignTokens.Spacing.sm) {
+                                        Text("No results found")
+                                            .font(DesignTokens.Typography.headline)
+                                            .foregroundColor(DesignTokens.Colors.primaryText)
+
+                                        Text("Try adjusting your search terms or filters")
+                                            .font(DesignTokens.Typography.callout)
+                                            .foregroundColor(DesignTokens.Colors.secondaryText)
+                                            .multilineTextAlignment(.center)
+                                    }
+                                }
+                                .padding(.top, DesignTokens.Spacing.xxxl)
+                                .frame(maxWidth: .infinity)
+                            } else {
+                                // Empty state (no notes at all)
+                                VStack(spacing: DesignTokens.Spacing.lg) {
+                                    Image(systemName: "note.text")
+                                        .font(.system(size: 48))
+                                        .foregroundColor(DesignTokens.Colors.tertiaryText)
+
+                                    VStack(spacing: DesignTokens.Spacing.sm) {
+                                        Text("No notes yet")
+                                            .font(DesignTokens.Typography.headline)
+                                            .foregroundColor(DesignTokens.Colors.primaryText)
+
+                                        Text("Create your first note to get started")
+                                            .font(DesignTokens.Typography.callout)
+                                            .foregroundColor(DesignTokens.Colors.secondaryText)
+                                            .multilineTextAlignment(.center)
+                                    }
+                                }
+                                .padding(.top, DesignTokens.Spacing.xxxl)
+                                .frame(maxWidth: .infinity)
                             }
 
                             // Spacer for bottom content
