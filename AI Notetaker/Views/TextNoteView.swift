@@ -73,7 +73,7 @@ struct TextNoteView: View {
                             dismiss()
                         }
                         .buttonStyle(.bordered)
-                        .tint(.secondary)
+                        .tint(.blue)
 
                         Spacer()
 
@@ -102,6 +102,7 @@ struct TextNoteView: View {
                     Button("Cancel") {
                         dismiss()
                     }
+                    .foregroundColor(.blue)
                 }
 
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -109,10 +110,12 @@ struct TextNoteView: View {
                         saveTextNote()
                     }
                     .disabled(title.isEmpty || content.isEmpty || isSaving)
+                    .foregroundColor(.blue)
                 }
             }
             .alert("Error", isPresented: $showingSaveAlert) {
                 Button("OK", role: .cancel) { }
+                .foregroundColor(.blue)
             } message: {
                 Text(saveError ?? "Unknown error occurred")
             }

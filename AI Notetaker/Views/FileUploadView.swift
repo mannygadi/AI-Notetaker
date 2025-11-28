@@ -161,6 +161,7 @@ struct FileUploadView: View {
                     Button("Cancel") {
                         dismiss()
                     }
+                    .foregroundColor(.blue)
                 }
             }
             .fileImporter(
@@ -172,6 +173,7 @@ struct FileUploadView: View {
             }
             .alert("Error", isPresented: $showingSaveAlert) {
                 Button("OK", role: .cancel) { }
+                .foregroundColor(.blue)
             } message: {
                 Text(saveError ?? "An error occurred while saving the file")
             }

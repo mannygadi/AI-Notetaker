@@ -54,6 +54,7 @@ struct NoteListView: View {
                     Button("Add Note") {
                         // Add note functionality
                     }
+                    .foregroundColor(.blue)
                 }
             }
         }

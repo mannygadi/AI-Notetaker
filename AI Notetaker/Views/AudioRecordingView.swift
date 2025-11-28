@@ -79,7 +79,7 @@ struct AudioRecordingView: View {
                         dismiss()
                     }
                     .buttonStyle(.bordered)
-                    .tint(.secondary)
+                    .tint(.blue)
 
                     // Save button (enabled when recording is complete)
                     Button("Save") {
@@ -98,10 +98,12 @@ struct AudioRecordingView: View {
                     Button("Cancel") {
                         dismiss()
                     }
+                    .foregroundColor(.blue)
                 }
             }
             .alert("Error", isPresented: $showingSaveAlert) {
                 Button("OK", role: .cancel) { }
+                .foregroundColor(.blue)
             } message: {
                 Text(saveError ?? "Unknown error occurred")
             }

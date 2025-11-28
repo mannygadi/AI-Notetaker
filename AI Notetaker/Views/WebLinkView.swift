@@ -197,10 +197,12 @@ struct WebLinkView: View {
                     Button("Cancel") {
                         dismiss()
                     }
+                    .foregroundColor(.blue)
                 }
             }
             .alert("Error", isPresented: $showingSaveAlert) {
                 Button("OK", role: .cancel) { }
+                .foregroundColor(.blue)
             } message: {
                 Text(saveError ?? "An error occurred while saving the web link")
             }
