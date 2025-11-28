@@ -94,7 +94,7 @@ struct MainView: View {
                         .padding(.top, 16)
                     }
                     .background(Color(.systemGroupedBackground))
-                    .navigationTitle("Notes")
+                    .navigationBarTitleDisplayMode(.large)
                     .navigationBarTitleDisplayMode(.large)
                     // No toolbar + button anymore
                 }

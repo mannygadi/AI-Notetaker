@@ -10,6 +10,9 @@ import SwiftUI
 struct FilterHeaderTabs: View {
     @Binding var selectedFilter: NoteFilterType
     @Binding var selectedFolder: String
+    @State private var searchText: String = ""
+    @State private var showingFolderAlert = false
+    @State private var newFolderName: String = ""
     let notes: [Note]
 
     // Computed filtered notes count for each tab
@@ -29,13 +32,44 @@ struct FilterHeaderTabs: View {
         return notes.filter { $0.noteTypeEnum == .webLink }.count
     }
 
+    // Computed filtered notes based on filter and search
+    private var filteredNotes: [Note] {
+        var filtered = notes
+
+        // Apply filter type
+        switch selectedFilter {
+        case .all:
+            break
+        case .audio:
+            filtered = filtered.filter { $0.noteTypeEnum == .audio }
+        case .document:
+            filtered = filtered.filter { $0.noteTypeEnum == .pdf }
+        case .link:
+            filtered = filtered.filter { $0.noteTypeEnum == .webLink }
+        }
+
+        // Apply search filter
+        if !searchText.isEmpty {
+            filtered = filtered.filter { note in
+                if let title = note.title?.lowercased() {
+                    return title.contains(searchText.lowercased())
+                }
+                if let content = note.content?.lowercased() {
+                    return content.contains(searchText.lowercased())
+                }
+                return false
+            }
+        }
+
+        return filtered
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             // Folder selection row
             HStack {
                 Button(action: {
-                    // TODO: Show folder selection modal
-                }) {
+                                    }) {
                     HStack(spacing: 8) {
                         Image(systemName: "folder")
                             .font(.system(size: 16, weight: .medium))
