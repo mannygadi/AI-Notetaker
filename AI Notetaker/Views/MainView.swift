@@ -158,7 +158,7 @@ struct MainView: View {
                                     withAnimation(.easeInOut(duration: 0.3)) {
                                         showingSelectionRows = false
                                     }
-                                    // TODO: Implement audio file upload
+                                    showingFileUpload = true
                                 }
                             )
 
@@ -171,7 +171,7 @@ struct MainView: View {
                                     withAnimation(.easeInOut(duration: 0.3)) {
                                         showingSelectionRows = false
                                     }
-                                    // TODO: Implement PDF/file upload
+                                    showingFileUpload = true
                                 }
                             )
 
@@ -197,7 +197,7 @@ struct MainView: View {
                                     withAnimation(.easeInOut(duration: 0.3)) {
                                         showingSelectionRows = false
                                     }
-                                    // TODO: Implement web link
+                                    showingWebLink = true
                                 }
                             )
                         }
@@ -271,6 +271,14 @@ struct MainView: View {
         }
         .sheet(isPresented: $showingTextNote) {
             TextNoteSheet()
+                .environment(\.managedObjectContext, viewContext)
+        }
+        .sheet(isPresented: $showingFileUpload) {
+            FileUploadSheet()
+                .environment(\.managedObjectContext, viewContext)
+        }
+        .sheet(isPresented: $showingWebLink) {
+            WebLinkSheet()
                 .environment(\.managedObjectContext, viewContext)
         }
     }
