@@ -88,8 +88,25 @@ struct MainView: View {
                                 }
                             }
 
-                        // Selection rows
-                        VStack(spacing: 0) {
+                        // Scroll indicator at top center
+                        HStack {
+                            Spacer()
+                            VStack(spacing: 4) {
+                                RoundedRectangle(cornerRadius: 2.5)
+                                    .fill(Color.gray.opacity(0.6))
+                                    .frame(width: 36, height: 5)
+
+                                Text("Scroll for options")
+                                    .font(.caption)
+                                    .foregroundColor(.gray.opacity(0.8))
+                            }
+                            .padding(.top, 8)
+                            .padding(.horizontal, 20)
+                            Spacer()
+                        }
+
+                        // Selection rows as separate slots
+                        VStack(spacing: 12) {
                             MainScreenRow(
                                 title: "Record Audio",
                                 icon: "mic.fill",
@@ -102,9 +119,6 @@ struct MainView: View {
                                     showingAudioRecording = true
                                 }
                             )
-
-                            Divider()
-                                .padding(.leading, 52)
 
                             MainScreenRow(
                                 title: "Audio File",
@@ -119,9 +133,6 @@ struct MainView: View {
                                 }
                             )
 
-                            Divider()
-                                .padding(.leading, 52)
-
                             MainScreenRow(
                                 title: "PDF & Text File",
                                 icon: "doc.fill",
@@ -135,9 +146,6 @@ struct MainView: View {
                                 }
                             )
 
-                            Divider()
-                                .padding(.leading, 52)
-
                             MainScreenRow(
                                 title: "Input Text",
                                 icon: "keyboard",
@@ -150,9 +158,6 @@ struct MainView: View {
                                     showingTextNote = true
                                 }
                             )
-
-                            Divider()
-                                .padding(.leading, 52)
 
                             MainScreenRow(
                                 title: "Web Link",
@@ -204,32 +209,28 @@ struct MainView: View {
                     VStack {
                         Spacer()
 
-                        HStack {
-                            Spacer()
-
-                            Button(action: {
-                                withAnimation(.easeInOut(duration: 0.3)) {
-                                    showingSelectionRows = true
-                                    selectionRowsOffset = 0
-                                }
-                            }) {
-                                HStack(spacing: 8) {
-                                    Image(systemName: "plus")
-                                        .font(.system(size: 16, weight: .semibold))
-
-                                    Text("New Note")
-                                        .font(.system(size: 16, weight: .medium))
-                                }
-                                .foregroundColor(.white)
-                                .padding(.horizontal, 24)
-                                .padding(.vertical, 16)
-                                .background(Color.blue)
-                                .cornerRadius(28)
-                                .shadow(color: .blue.opacity(0.3), radius: 8, x: 0, y: 4)
+                        Button(action: {
+                            withAnimation(.easeInOut(duration: 0.3)) {
+                                showingSelectionRows = true
+                                selectionRowsOffset = 0
                             }
-                            .padding(.trailing, 20)
-                            .padding(.bottom, 40) // Safe area
+                        }) {
+                            HStack(spacing: 8) {
+                                Image(systemName: "plus")
+                                    .font(.system(size: 16, weight: .semibold))
+
+                                Text("New Note")
+                                    .font(.system(size: 16, weight: .medium))
+                            }
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 24)
+                            .padding(.vertical, 16)
+                            .background(Color.blue)
+                            .cornerRadius(28)
+                            .shadow(color: .blue.opacity(0.3), radius: 8, x: 0, y: 4)
                         }
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 40) // Safe area
                     }
                 }
             }

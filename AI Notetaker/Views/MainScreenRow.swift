@@ -18,12 +18,12 @@ struct MainScreenRow: View {
         Button(action: action) {
             HStack(spacing: 16) {
                 // Icon background
-                RoundedRectangle(cornerRadius: 10)
+                RoundedRectangle(cornerRadius: 12)
                     .fill(backgroundColor)
-                    .frame(width: 40, height: 40)
+                    .frame(width: 48, height: 48)
                     .overlay {
                         Image(systemName: icon)
-                            .font(.system(size: 18, weight: .medium))
+                            .font(.system(size: 20, weight: .medium))
                             .foregroundColor(iconColor)
                     }
 
@@ -34,9 +34,11 @@ struct MainScreenRow: View {
 
                 Spacer()
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 14)
+            .padding(.horizontal, 20)
+            .padding(.vertical, 16)
             .background(Color.white)
+            .cornerRadius(16)
+            .shadow(color: .black.opacity(0.08), radius: 4, x: 0, y: 2)
         }
         .buttonStyle(.plain)
     }
