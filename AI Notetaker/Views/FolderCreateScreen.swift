@@ -59,17 +59,23 @@ struct FolderCreateScreen: View {
                     Button(action: {
                         createFolder()
                     }) {
-                        Text("Create Folder")
-                            .font(.system(size: 18, weight: .medium))
-                            .foregroundColor(folderName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? .gray : .white)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 56)
-                            .background(
-                                folderName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-                                ? Color(.systemGray5)
-                                : Color.blue
-                            )
-                            .cornerRadius(12)
+                        HStack(spacing: 8) {
+                            Image(systemName: "plus")
+                                .font(.system(size: 16, weight: .semibold))
+
+                            Text("Create Folder")
+                                .font(.system(size: 16, weight: .medium))
+                        }
+                        .foregroundColor(folderName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? .gray : .white)
+                        .padding(.horizontal, 24)
+                        .padding(.vertical, 16)
+                        .background(
+                            folderName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                            ? Color(.systemGray5)
+                            : Color.blue
+                        )
+                        .cornerRadius(28)
+                        .shadow(color: folderName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? Color.clear : Color.blue.opacity(0.3), radius: 8, x: 0, y: 4)
                     }
                     .disabled(folderName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
