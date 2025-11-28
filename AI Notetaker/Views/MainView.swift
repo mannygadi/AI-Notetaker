@@ -21,11 +21,29 @@ struct MainView: View {
     @State private var selectionRowsOffset: CGFloat = 0
     @State private var lastPanValue: CGFloat = 0
 
+    // Filter and folder state
+    @State private var selectedFilter: NoteFilterType = .all
+    @State private var selectedFolder: String = "Default"
+
     // Fetch request for all notes
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \Note.timestamp, ascending: false)],
         animation: .default)
     private var notes: FetchedResults<Note>
+
+    // Computed filtered notes based on selected filter
+    private var filteredNotes: [Note] {
+        switch selectedFilter {
+        case .all:
+            return Array(notes)
+        case .audio:
+            return notes.filter { $0.noteTypeEnum == .audio }
+        case .document:
+            return notes.filter { $0.noteTypeEnum == .pdf }
+        case .link:
+            return notes.filter { $0.noteTypeEnum == .webLink }
+        }
+    }
 
     var body: some View {
         GeometryReader { geometry in
@@ -34,8 +52,15 @@ struct MainView: View {
                 NavigationStack {
                     ScrollView {
                         VStack(spacing: 16) {
-                            // Recent notes section at the top
-                            if !notes.isEmpty {
+                            // Filter header with folder selection and tabs
+                            FilterHeaderTabs(
+                                selectedFilter: $selectedFilter,
+                                selectedFolder: $selectedFolder,
+                                notes: Array(notes)
+                            )
+
+                            // Filtered notes section
+                            if !filteredNotes.isEmpty {
                                 VStack(alignment: .leading, spacing: 12) {
                                     Text("All Notes")
                                         .font(.headline)
@@ -43,13 +68,13 @@ struct MainView: View {
                                         .padding(.horizontal)
 
                                     VStack(spacing: 0) {
-                                        ForEach(Array(notes), id: \.id) { note in
+                                        ForEach(filteredNotes, id: \.id) { note in
                                             NavigationLink(destination: NoteDetailView(note: note)) {
                                                 NoteRowView(note: note)
                                             }
                                             .buttonStyle(PlainButtonStyle())
 
-                                            if note.id != notes.last?.id {
+                                            if note.id != filteredNotes.last?.id {
                                                 Divider()
                                                     .padding(.leading, 16)
                                             }
