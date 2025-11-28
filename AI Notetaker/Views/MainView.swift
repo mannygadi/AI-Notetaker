@@ -34,29 +34,39 @@ struct MainView: View {
     }
 
     var body: some View {
-        NavigationSplitView {
-            // Sidebar with filters
-            SidebarView(
-                selectedFilter: $selectedFilter,
-                notesCount: notes.count,
-                onAddNote: { noteType in
-                    handleAddNote(noteType)
-                }
-            )
-        } detail: {
-            // Detail view for selected note
-            if let selectedNote = filteredNotes.first {
-                NoteDetailView(note: selectedNote)
-            } else {
-                VStack {
-                    Text("No notes found")
-                        .font(.title)
-                        .foregroundColor(.secondary)
+        NavigationStack {
+            VStack(spacing: 0) {
+                // Filter buttons at the top
+                FilterHeaderView(
+                    selectedFilter: $selectedFilter,
+                    notes: Array(notes),
+                    onAddNote: { noteType in
+                        handleAddNote(noteType)
+                    }
+                )
 
-                    Text("Tap the + button to create your first note")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                        .padding(.top, 8)
+                // Notes list
+                List {
+                    ForEach(filteredNotes, id: \.id) { note in
+                        NavigationLink(destination: NoteDetailView(note: note)) {
+                            NoteRowView(note: note)
+                        }
+                    }
+                }
+                .listStyle(.plain)
+            }
+            .navigationTitle("Notes")
+            .navigationBarTitleDisplayMode(.large)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        // Default to audio recording for + button
+                        showingAudioRecording = true
+                    }) {
+                        Image(systemName: "plus")
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                    }
                 }
             }
         }
