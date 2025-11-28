@@ -10,10 +10,6 @@ import SwiftUI
 struct MainView: View {
     @Environment(\.managedObjectContext) private var viewContext
 
-    // Filter state
-    @State private var selectedFilter: NoteType?
-    @State private var searchText: String = ""
-
     // Sheet presentation states
     @State private var showingAudioRecording = false
     @State private var showingTextNote = false
@@ -26,41 +22,115 @@ struct MainView: View {
         animation: .default)
     private var notes: FetchedResults<Note>
 
-    private var filteredNotes: [Note] {
-        if let selectedFilter = selectedFilter {
-            return notes.filter { $0.noteTypeEnum == selectedFilter }
-        }
-        return Array(notes)
-    }
-
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                // Filter buttons at the top
-                FilterHeaderView(
-                    selectedFilter: $selectedFilter,
-                    notes: Array(notes),
-                    onAddNote: { noteType in
-                        handleAddNote(noteType)
-                    }
-                )
+            ScrollView {
+                VStack(spacing: 16) {
+                    // Note type action rows matching MainScreen.PNG
+                    VStack(spacing: 0) {
+                        MainScreenRow(
+                            title: "Record Audio",
+                            icon: "mic.fill",
+                            iconColor: .red,
+                            backgroundColor: Color(red: 1.0, green: 0.9, blue: 0.9),
+                            action: {
+                                showingAudioRecording = true
+                            }
+                        )
 
-                // Notes list
-                List {
-                    ForEach(filteredNotes, id: \.id) { note in
-                        NavigationLink(destination: NoteDetailView(note: note)) {
-                            NoteRowView(note: note)
+                        Divider()
+                            .padding(.leading, 52)
+
+                        MainScreenRow(
+                            title: "Audio File",
+                            icon: "waveform",
+                            iconColor: .orange,
+                            backgroundColor: Color(red: 1.0, green: 0.95, blue: 0.85),
+                            action: {
+                                // TODO: Implement audio file upload
+                            }
+                        )
+
+                        Divider()
+                            .padding(.leading, 52)
+
+                        MainScreenRow(
+                            title: "PDF & Text File",
+                            icon: "doc.fill",
+                            iconColor: .blue,
+                            backgroundColor: Color(red: 0.9, green: 0.95, blue: 1.0),
+                            action: {
+                                // TODO: Implement PDF/file upload
+                            }
+                        )
+
+                        Divider()
+                            .padding(.leading, 52)
+
+                        MainScreenRow(
+                            title: "Input Text",
+                            icon: "keyboard",
+                            iconColor: .green,
+                            backgroundColor: Color(red: 0.9, green: 1.0, blue: 0.9),
+                            action: {
+                                showingTextNote = true
+                            }
+                        )
+
+                        Divider()
+                            .padding(.leading, 52)
+
+                        MainScreenRow(
+                            title: "Web Link",
+                            icon: "globe",
+                            iconColor: .purple,
+                            backgroundColor: Color(red: 0.95, green: 0.9, blue: 1.0),
+                            action: {
+                                // TODO: Implement web link
+                            }
+                        )
+                    }
+                    .background(Color.white)
+                    .cornerRadius(12)
+                    .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
+                    .padding(.horizontal)
+
+                    // Recent notes section
+                    if !notes.isEmpty {
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Recent Notes")
+                                .font(.headline)
+                                .fontWeight(.semibold)
+                                .padding(.horizontal)
+
+                            VStack(spacing: 0) {
+                                ForEach(Array(notes.prefix(5)), id: \.id) { note in
+                                    NavigationLink(destination: NoteDetailView(note: note)) {
+                                        NoteRowView(note: note)
+                                    }
+                                    .buttonStyle(PlainButtonStyle())
+
+                                    if note.id != notes.first?.id {
+                                        Divider()
+                                            .padding(.leading, 16)
+                                    }
+                                }
+                            }
+                            .background(Color.white)
+                            .cornerRadius(12)
+                            .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
+                            .padding(.horizontal)
                         }
                     }
                 }
-                .listStyle(.plain)
+                .padding(.top, 16)
             }
+            .background(Color(.systemGroupedBackground))
             .navigationTitle("Notes")
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
-                        // Default to audio recording for + button
                         showingAudioRecording = true
                     }) {
                         Image(systemName: "plus")
@@ -77,19 +147,6 @@ struct MainView: View {
         .sheet(isPresented: $showingTextNote) {
             TextNoteSheet()
                 .environment(\.managedObjectContext, viewContext)
-        }
-    }
-
-    private func handleAddNote(_ noteType: NoteType) {
-        switch noteType {
-        case .audio:
-            showingAudioRecording = true
-        case .text:
-            showingTextNote = true
-        case .pdf:
-            showingFileUpload = true
-        case .webLink:
-            showingWebLink = true
         }
     }
 }

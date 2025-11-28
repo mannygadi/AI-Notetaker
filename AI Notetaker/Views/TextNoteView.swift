@@ -20,80 +20,80 @@ struct TextNoteView: View {
 
     var body: some View {
         NavigationView {
-            VStack(alignment: .leading, spacing: 20) {
-                // Title input section
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Note Title")
-                        .font(.headline)
-                        .foregroundColor(.primary)
-
-                    TextField("Enter note title...", text: $title)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .padding(.horizontal)
-                }
-                .padding(.top)
-
-                // Content input section
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack {
-                        Text("Note Content")
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    // Title input section
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Note Title")
                             .font(.headline)
                             .foregroundColor(.primary)
 
-                        Spacer()
-
-                        Text("\(content.count) characters")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-
-                    ZStack(alignment: .topLeading) {
-                        RoundedRectangle(cornerRadius: 10)
-                            .fill(Color(.systemGray6))
-                            .frame(minHeight: 300)
-
-                        if content.isEmpty {
-                            Text("Start typing your note content...")
-                                .foregroundColor(.secondary)
-                                .padding()
-                        }
-
-                        TextEditor(text: $content)
-                            .padding(8)
-                            .background(Color.clear)
-                            .scrollContentBackground(.hidden)
+                        TextField("Enter note title...", text: $title)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
                     }
                     .padding(.horizontal)
+
+                    // Content input section
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Text("Note Content")
+                                .font(.headline)
+                                .foregroundColor(.primary)
+
+                            Spacer()
+
+                            Text("\(content.count) characters")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+
+                        ZStack(alignment: .topLeading) {
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(Color(.systemGray6))
+                                .frame(minHeight: 300)
+
+                            if content.isEmpty {
+                                Text("Start typing your note content...")
+                                    .foregroundColor(.secondary)
+                                    .padding()
+                            }
+
+                            TextEditor(text: $content)
+                                .padding(8)
+                                .background(Color.clear)
+                                .scrollContentBackground(.hidden)
+                        }
+                    }
+                    .padding(.horizontal)
+
+                    // Action buttons
+                    HStack(spacing: 20) {
+                        // Cancel button
+                        Button("Cancel") {
+                            dismiss()
+                        }
+                        .buttonStyle(.bordered)
+                        .tint(.secondary)
+
+                        Spacer()
+
+                        // Save button
+                        Button("Save Note") {
+                            saveTextNote()
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .disabled(title.isEmpty || content.isEmpty || isSaving)
+
+                        if isSaving {
+                            ProgressView()
+                                .scaleEffect(0.8)
+                                .padding(.leading, 8)
+                        }
+                    }
+                    .padding(.horizontal)
+                    .padding(.bottom, 30)
                 }
-
-                Spacer()
-
-                // Action buttons
-                HStack(spacing: 20) {
-                    // Cancel button
-                    Button("Cancel") {
-                        dismiss()
-                    }
-                    .buttonStyle(.bordered)
-                    .tint(.secondary)
-
-                    Spacer()
-
-                    // Save button
-                    Button("Save Note") {
-                        saveTextNote()
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .disabled(title.isEmpty || content.isEmpty || isSaving)
-
-                    if isSaving {
-                        ProgressView()
-                            .scaleEffect(0.8)
-                            .padding(.leading, 8)
-                    }
-                }
-                .padding(.horizontal)
-                .padding(.bottom, 30)
+                .padding(.top, 16)
             }
             .navigationTitle("Text Note")
             .navigationBarTitleDisplayMode(.inline)
