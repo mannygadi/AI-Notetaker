@@ -16,6 +16,11 @@ struct MainView: View {
     @State private var showingFileUpload = false
     @State private var showingWebLink = false
 
+    // Collapsible UI state
+    @State private var showingSelectionRows = true
+    @State private var selectionRowsOffset: CGFloat = 0
+    @State private var lastPanValue: CGFloat = 0
+
     // Fetch request for all notes
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \Note.timestamp, ascending: false)],
@@ -23,123 +28,213 @@ struct MainView: View {
     private var notes: FetchedResults<Note>
 
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(spacing: 16) {
-                    // Note type action rows matching MainScreen.PNG
-                    VStack(spacing: 0) {
-                        MainScreenRow(
-                            title: "Record Audio",
-                            icon: "mic.fill",
-                            iconColor: .red,
-                            backgroundColor: Color(red: 1.0, green: 0.9, blue: 0.9),
-                            action: {
-                                showingAudioRecording = true
-                            }
-                        )
+        GeometryReader { geometry in
+            ZStack(alignment: .bottom) {
+                // Main content
+                NavigationStack {
+                    ScrollView {
+                        VStack(spacing: 16) {
+                            // Recent notes section at the top
+                            if !notes.isEmpty {
+                                VStack(alignment: .leading, spacing: 12) {
+                                    Text("All Notes")
+                                        .font(.headline)
+                                        .fontWeight(.semibold)
+                                        .padding(.horizontal)
 
-                        Divider()
-                            .padding(.leading, 52)
+                                    VStack(spacing: 0) {
+                                        ForEach(Array(notes), id: \.id) { note in
+                                            NavigationLink(destination: NoteDetailView(note: note)) {
+                                                NoteRowView(note: note)
+                                            }
+                                            .buttonStyle(PlainButtonStyle())
 
-                        MainScreenRow(
-                            title: "Audio File",
-                            icon: "waveform",
-                            iconColor: .orange,
-                            backgroundColor: Color(red: 1.0, green: 0.95, blue: 0.85),
-                            action: {
-                                // TODO: Implement audio file upload
-                            }
-                        )
-
-                        Divider()
-                            .padding(.leading, 52)
-
-                        MainScreenRow(
-                            title: "PDF & Text File",
-                            icon: "doc.fill",
-                            iconColor: .blue,
-                            backgroundColor: Color(red: 0.9, green: 0.95, blue: 1.0),
-                            action: {
-                                // TODO: Implement PDF/file upload
-                            }
-                        )
-
-                        Divider()
-                            .padding(.leading, 52)
-
-                        MainScreenRow(
-                            title: "Input Text",
-                            icon: "keyboard",
-                            iconColor: .green,
-                            backgroundColor: Color(red: 0.9, green: 1.0, blue: 0.9),
-                            action: {
-                                showingTextNote = true
-                            }
-                        )
-
-                        Divider()
-                            .padding(.leading, 52)
-
-                        MainScreenRow(
-                            title: "Web Link",
-                            icon: "globe",
-                            iconColor: .purple,
-                            backgroundColor: Color(red: 0.95, green: 0.9, blue: 1.0),
-                            action: {
-                                // TODO: Implement web link
-                            }
-                        )
-                    }
-                    .background(Color.white)
-                    .cornerRadius(12)
-                    .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
-                    .padding(.horizontal)
-
-                    // Recent notes section
-                    if !notes.isEmpty {
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("Recent Notes")
-                                .font(.headline)
-                                .fontWeight(.semibold)
-                                .padding(.horizontal)
-
-                            VStack(spacing: 0) {
-                                ForEach(Array(notes.prefix(5)), id: \.id) { note in
-                                    NavigationLink(destination: NoteDetailView(note: note)) {
-                                        NoteRowView(note: note)
+                                            if note.id != notes.last?.id {
+                                                Divider()
+                                                    .padding(.leading, 16)
+                                            }
+                                        }
                                     }
-                                    .buttonStyle(PlainButtonStyle())
-
-                                    if note.id != notes.first?.id {
-                                        Divider()
-                                            .padding(.leading, 16)
-                                    }
+                                    .background(Color.white)
+                                    .cornerRadius(12)
+                                    .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
+                                    .padding(.horizontal)
                                 }
                             }
-                            .background(Color.white)
-                            .cornerRadius(12)
-                            .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
-                            .padding(.horizontal)
+
+                            // Spacer for bottom content
+                            Spacer()
+                                .frame(height: 80) // Space for floating button
                         }
+                        .padding(.top, 16)
                     }
+                    .background(Color(.systemGroupedBackground))
+                    .navigationTitle("Notes")
+                    .navigationBarTitleDisplayMode(.large)
+                    // No toolbar + button anymore
                 }
-                .padding(.top, 16)
-            }
-            .background(Color(.systemGroupedBackground))
-            .navigationTitle("Notes")
-            .navigationBarTitleDisplayMode(.large)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        showingAudioRecording = true
-                    }) {
-                        Image(systemName: "plus")
-                            .font(.title2)
-                            .fontWeight(.semibold)
+
+                // Collapsible selection rows overlay
+                if showingSelectionRows {
+                    VStack(spacing: 0) {
+                        Spacer()
+
+                        // Semi-transparent overlay
+                        Color.black.opacity(0.3)
+                            .onTapGesture {
+                                withAnimation(.easeInOut(duration: 0.3)) {
+                                    showingSelectionRows = false
+                                    selectionRowsOffset = 0
+                                }
+                            }
+
+                        // Selection rows
+                        VStack(spacing: 0) {
+                            MainScreenRow(
+                                title: "Record Audio",
+                                icon: "mic.fill",
+                                iconColor: .red,
+                                backgroundColor: Color(red: 1.0, green: 0.9, blue: 0.9),
+                                action: {
+                                    withAnimation(.easeInOut(duration: 0.3)) {
+                                        showingSelectionRows = false
+                                    }
+                                    showingAudioRecording = true
+                                }
+                            )
+
+                            Divider()
+                                .padding(.leading, 52)
+
+                            MainScreenRow(
+                                title: "Audio File",
+                                icon: "waveform",
+                                iconColor: .orange,
+                                backgroundColor: Color(red: 1.0, green: 0.95, blue: 0.85),
+                                action: {
+                                    withAnimation(.easeInOut(duration: 0.3)) {
+                                        showingSelectionRows = false
+                                    }
+                                    // TODO: Implement audio file upload
+                                }
+                            )
+
+                            Divider()
+                                .padding(.leading, 52)
+
+                            MainScreenRow(
+                                title: "PDF & Text File",
+                                icon: "doc.fill",
+                                iconColor: .blue,
+                                backgroundColor: Color(red: 0.9, green: 0.95, blue: 1.0),
+                                action: {
+                                    withAnimation(.easeInOut(duration: 0.3)) {
+                                        showingSelectionRows = false
+                                    }
+                                    // TODO: Implement PDF/file upload
+                                }
+                            )
+
+                            Divider()
+                                .padding(.leading, 52)
+
+                            MainScreenRow(
+                                title: "Input Text",
+                                icon: "keyboard",
+                                iconColor: .green,
+                                backgroundColor: Color(red: 0.9, green: 1.0, blue: 0.9),
+                                action: {
+                                    withAnimation(.easeInOut(duration: 0.3)) {
+                                        showingSelectionRows = false
+                                    }
+                                    showingTextNote = true
+                                }
+                            )
+
+                            Divider()
+                                .padding(.leading, 52)
+
+                            MainScreenRow(
+                                title: "Web Link",
+                                icon: "globe",
+                                iconColor: .purple,
+                                backgroundColor: Color(red: 0.95, green: 0.9, blue: 1.0),
+                                action: {
+                                    withAnimation(.easeInOut(duration: 0.3)) {
+                                        showingSelectionRows = false
+                                    }
+                                    // TODO: Implement web link
+                                }
+                            )
+                        }
+                        .background(Color.white)
+                        .cornerRadius(20, corners: [.topLeft, .topRight])
+                        .shadow(color: .black.opacity(0.2), radius: 10, x: 0, y: -5)
+                        .offset(y: selectionRowsOffset)
+                        .gesture(
+                            DragGesture()
+                                .onChanged { value in
+                                    let delta = value.translation.height - lastPanValue
+                                    if delta > 0 { // Only allow dragging down
+                                        selectionRowsOffset = min(delta, 200)
+                                    }
+                                    lastPanValue = value.translation.height
+                                }
+                                .onEnded { value in
+                                    let threshold: CGFloat = 100
+                                    if selectionRowsOffset > threshold {
+                                        withAnimation(.easeInOut(duration: 0.3)) {
+                                            showingSelectionRows = false
+                                            selectionRowsOffset = geometry.size.height
+                                        }
+                                    } else {
+                                        withAnimation(.easeInOut(duration: 0.3)) {
+                                            selectionRowsOffset = 0
+                                        }
+                                    }
+                                    lastPanValue = 0
+                                }
+                        )
+                    }
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                }
+
+                // Blue + New Note button (only when selection rows are hidden)
+                if !showingSelectionRows {
+                    VStack {
+                        Spacer()
+
+                        HStack {
+                            Spacer()
+
+                            Button(action: {
+                                withAnimation(.easeInOut(duration: 0.3)) {
+                                    showingSelectionRows = true
+                                    selectionRowsOffset = 0
+                                }
+                            }) {
+                                HStack(spacing: 8) {
+                                    Image(systemName: "plus")
+                                        .font(.system(size: 16, weight: .semibold))
+
+                                    Text("New Note")
+                                        .font(.system(size: 16, weight: .medium))
+                                }
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 24)
+                                .padding(.vertical, 16)
+                                .background(Color.blue)
+                                .cornerRadius(28)
+                                .shadow(color: .blue.opacity(0.3), radius: 8, x: 0, y: 4)
+                            }
+                            .padding(.trailing, 20)
+                            .padding(.bottom, 40) // Safe area
+                        }
                     }
                 }
             }
         }
+        .ignoresSafeArea(.keyboard)
         .sheet(isPresented: $showingAudioRecording) {
             AudioRecordingView()
                 .environment(\.managedObjectContext, viewContext)
@@ -148,5 +243,26 @@ struct MainView: View {
             TextNoteSheet()
                 .environment(\.managedObjectContext, viewContext)
         }
+    }
+}
+
+// Extension for custom corner radius
+extension View {
+    func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
+        clipShape(RoundedCorner(radius: radius, corners: corners))
+    }
+}
+
+struct RoundedCorner: Shape {
+    var radius: CGFloat = .infinity
+    var corners: UIRectCorner = .allCorners
+
+    func path(in rect: CGRect) -> Path {
+        let path = UIBezierPath(
+            roundedRect: rect,
+            byRoundingCorners: corners,
+            cornerRadii: CGSize(width: radius, height: radius)
+        )
+        return Path(path.cgPath)
     }
 }
