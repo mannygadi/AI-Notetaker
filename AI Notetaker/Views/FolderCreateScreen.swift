@@ -63,21 +63,18 @@ struct FolderCreateScreen: View {
                             Image(systemName: "plus")
                                 .font(.system(size: 16, weight: .semibold))
 
-                            Text("Create Folder")
+                            Text("New Folder")
                                 .font(.system(size: 16, weight: .medium))
                         }
-                        .foregroundColor(folderName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? .gray : .white)
+                        .foregroundColor(.white)
                         .padding(.horizontal, 24)
                         .padding(.vertical, 16)
-                        .background(
-                            folderName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-                            ? Color(.systemGray5)
-                            : Color.blue
-                        )
+                        .background(Color.blue)
                         .cornerRadius(28)
-                        .shadow(color: folderName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? Color.clear : Color.blue.opacity(0.3), radius: 8, x: 0, y: 4)
+                        .shadow(color: Color.blue.opacity(0.3), radius: 8, x: 0, y: 4)
                     }
                     .disabled(folderName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    .opacity(folderName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? 0.6 : 1.0)
                 }
                 .padding(.horizontal, 16)
                 .padding(.bottom, 32)
