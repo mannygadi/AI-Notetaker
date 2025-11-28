@@ -31,53 +31,48 @@ struct FolderCreateScreen: View {
                 .padding(.horizontal, 16)
                 .padding(.top, 12)
 
-                VStack(spacing: 40) {
+                VStack(spacing: DesignTokens.Spacing.xxxl) {
                     // Title
                     Text("Create New Folder")
-                        .font(.largeTitle)
-                        .fontWeight(.semibold)
+                        .font(DesignTokens.Typography.largeTitle)
+                        .fontWeight(.bold)
                         .frame(maxWidth: .infinity, alignment: .leading)
 
                     // Folder name input
-                    VStack(alignment: .leading, spacing: 8) {
+                    VStack(alignment: .leading, spacing: DesignTokens.Spacing.sm) {
                         Text("Folder Name")
-                            .font(.headline)
-                            .foregroundColor(.primary)
+                            .font(DesignTokens.Typography.callout)
+                            .foregroundColor(DesignTokens.Colors.primaryText)
 
                         TextField("Enter folder name...", text: $folderName)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .modernTextField()
                             .textInputAutocapitalization(.sentences)
                     }
-                    .padding(.horizontal)
+                    .padding(.horizontal, DesignTokens.Spacing.lg)
 
                     Spacer()
                 }
-                .padding(.top, 60)
+                .padding(.top, DesignTokens.Spacing.xxxl)
 
                 // Bottom button
                 HStack {
                     Button(action: {
                         createFolder()
                     }) {
-                        HStack(spacing: 8) {
+                        HStack(spacing: DesignTokens.Spacing.sm) {
                             Image(systemName: "plus")
                                 .font(.system(size: 16, weight: .semibold))
 
                             Text("New Folder")
-                                .font(.system(size: 16, weight: .medium))
+                                .font(DesignTokens.Typography.callout)
                         }
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 24)
-                        .padding(.vertical, 16)
-                        .background(Color.blue)
-                        .cornerRadius(28)
-                        .shadow(color: Color.blue.opacity(0.3), radius: 8, x: 0, y: 4)
+                        .modernPrimaryButton()
                     }
                     .disabled(folderName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                     .opacity(folderName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? 0.6 : 1.0)
                 }
-                .padding(.horizontal, 16)
-                .padding(.bottom, 32)
+                .padding(.horizontal, DesignTokens.Spacing.lg)
+                .padding(.bottom, DesignTokens.Spacing.xxxl)
             }
             .navigationBarHidden(true)
             .background(Color(.systemBackground))

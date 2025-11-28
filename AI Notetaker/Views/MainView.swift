@@ -51,7 +51,7 @@ struct MainView: View {
                 // Main content
                 NavigationStack {
                     ScrollView {
-                        VStack(spacing: 16) {
+                        VStack(spacing: DesignTokens.Spacing.lg) {
                             // Filter header with folder selection and tabs
                             FilterHeaderTabs(
                                 selectedFilter: $selectedFilter,
@@ -65,11 +65,10 @@ struct MainView: View {
 
                             // Filtered notes section
                             if !filteredNotes.isEmpty {
-                                VStack(alignment: .leading, spacing: 12) {
+                                VStack(alignment: .leading, spacing: DesignTokens.Spacing.md) {
                                     Text("All Notes")
-                                        .font(.headline)
-                                        .fontWeight(.semibold)
-                                        .padding(.horizontal)
+                                        .font(DesignTokens.Typography.headline)
+                                        .padding(.horizontal, DesignTokens.Spacing.lg)
 
                                     VStack(spacing: 0) {
                                         ForEach(filteredNotes, id: \.id) { note in
@@ -80,14 +79,12 @@ struct MainView: View {
 
                                             if note.id != filteredNotes.last?.id {
                                                 Divider()
-                                                    .padding(.leading, 16)
+                                                    .padding(.leading, DesignTokens.Spacing.xl)
                                             }
                                         }
                                     }
-                                    .background(Color.white)
-                                    .cornerRadius(12)
-                                    .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
-                                    .padding(.horizontal)
+                                    .modernCard()
+                                    .padding(.horizontal, DesignTokens.Spacing.lg)
                                 }
                             }
 
@@ -95,7 +92,7 @@ struct MainView: View {
                             Spacer()
                                 .frame(height: 80) // Space for floating button
                         }
-                        .padding(.top, 16)
+                        .padding(.top, DesignTokens.Spacing.lg)
                     }
                     .background(Color(.systemGroupedBackground))
                     .navigationBarTitleDisplayMode(.large)
@@ -244,22 +241,17 @@ struct MainView: View {
                                 selectionRowsOffset = 0
                             }
                         }) {
-                            HStack(spacing: 8) {
+                            HStack(spacing: DesignTokens.Spacing.sm) {
                                 Image(systemName: "plus")
                                     .font(.system(size: 16, weight: .semibold))
 
                                 Text("New Note")
-                                    .font(.system(size: 16, weight: .medium))
+                                    .font(DesignTokens.Typography.callout)
                             }
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 24)
-                            .padding(.vertical, 16)
-                            .background(Color.blue)
-                            .cornerRadius(28)
-                            .shadow(color: .blue.opacity(0.3), radius: 8, x: 0, y: 4)
+                            .modernPrimaryButton()
                         }
-                        .padding(.horizontal, 20)
-                        .padding(.bottom, 40) // Safe area
+                        .padding(.horizontal, DesignTokens.Spacing.xl)
+                        .padding(.bottom, DesignTokens.Spacing.xxxl) // Safe area
                     }
                 }
             }

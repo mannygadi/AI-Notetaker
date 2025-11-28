@@ -83,35 +83,34 @@ struct FilterHeaderTabs: View {
                 Button(action: {
                     showingFolderCreateScreen = true
                 }) {
-                    HStack(spacing: 8) {
+                    HStack(spacing: DesignTokens.Spacing.sm) {
                         Image(systemName: "folder")
                             .font(.system(size: 16, weight: .medium))
-                            .foregroundColor(.blue)
+                            .foregroundColor(DesignTokens.Colors.primary)
 
                         Text(selectedFolder)
-                            .font(.system(size: 16, weight: .medium))
-                            .foregroundColor(.primary)
+                            .font(DesignTokens.Typography.callout)
+                            .foregroundColor(DesignTokens.Colors.primaryText)
 
                         Image(systemName: "chevron.down")
                             .font(.system(size: 12, weight: .medium))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(DesignTokens.Colors.secondaryText)
                     }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 12)
-                    .background(Color(.systemGray6))
-                    .cornerRadius(10)
+                    .padding(.horizontal, DesignTokens.Spacing.lg)
+                    .padding(.vertical, DesignTokens.Spacing.md)
+                    .modernSecondaryButton()
                 }
                 .buttonStyle(.plain)
 
                 Spacer()
             }
-            .padding(.horizontal)
-            .padding(.top, 8)
-            .padding(.bottom, 12)
+            .padding(.horizontal, DesignTokens.Spacing.lg)
+            .padding(.top, DesignTokens.Spacing.sm)
+            .padding(.bottom, DesignTokens.Spacing.md)
 
             // Filter tabs
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 4) {
+                HStack(spacing: DesignTokens.Spacing.xs) {
                     ForEach(NoteFilterType.allCases, id: \.self) { filterType in
                         FilterTab(
                             title: filterType.displayName,
@@ -122,9 +121,9 @@ struct FilterHeaderTabs: View {
                         }
                     }
                 }
-                .padding(.horizontal)
+                .padding(.horizontal, DesignTokens.Spacing.lg)
             }
-            .padding(.bottom, 16)
+            .padding(.bottom, DesignTokens.Spacing.lg)
         }
         .background(Color(.systemBackground))
             .sheet(isPresented: $showingFolderCreateScreen) {
@@ -191,31 +190,34 @@ struct FilterTab: View {
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 6) {
+            HStack(spacing: DesignTokens.Spacing.sm) {
                 Text(title)
-                    .font(.system(size: 15, weight: .medium))
-                    .foregroundColor(isSelected ? .white : .primary)
+                    .font(DesignTokens.Typography.callout)
+                    .foregroundColor(isSelected ? .white : DesignTokens.Colors.primaryText)
 
                 if count > 0 {
                     Text("\(count)")
-                        .font(.system(size: 12, weight: .medium))
-                        .foregroundColor(isSelected ? .white.opacity(0.8) : .secondary)
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 2)
+                        .font(DesignTokens.Typography.caption)
+                        .fontWeight(.semibold)
+                        .foregroundColor(isSelected ? .white.opacity(0.9) : DesignTokens.Colors.secondaryText)
+                        .padding(.horizontal, DesignTokens.Spacing.sm)
+                        .padding(.vertical, 1)
                         .background(
                             Capsule()
-                                .fill(isSelected ? .white.opacity(0.2) : Color(.systemGray5))
+                                .fill(isSelected ? .white.opacity(0.2) : DesignTokens.Colors.secondaryBackground)
                         )
                 }
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 10)
+            .padding(.horizontal, DesignTokens.Spacing.lg)
+            .padding(.vertical, DesignTokens.Spacing.sm)
             .background(
                 Capsule()
-                    .fill(isSelected ? Color.blue : Color(.systemGray6))
+                    .fill(isSelected ? DesignTokens.Colors.primary : DesignTokens.Colors.secondaryBackground)
             )
         }
         .buttonStyle(.plain)
+        .scaleEffect(isSelected ? 1.05 : 1.0)
+        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isSelected)
     }
 }
 

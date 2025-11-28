@@ -16,31 +16,42 @@ struct MainScreenRow: View {
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 16) {
-                // Icon background
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(backgroundColor)
-                    .frame(width: 48, height: 48)
-                    .overlay {
-                        Image(systemName: icon)
-                            .font(.system(size: 20, weight: .medium))
-                            .foregroundColor(iconColor)
-                    }
+            HStack(spacing: DesignTokens.Spacing.lg) {
+                // Modern icon with gradient background
+                ZStack {
+                    RoundedRectangle(cornerRadius: DesignTokens.CornerRadius.large)
+                        .fill(
+                            LinearGradient(
+                                gradient: Gradient(colors: [backgroundColor, backgroundColor.opacity(0.7)]),
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .frame(width: 52, height: 52)
+                        .shadow(color: backgroundColor.opacity(0.3), radius: 4, x: 0, y: 2)
 
-                // Title
+                    Image(systemName: icon)
+                        .font(.system(size: 22, weight: .semibold))
+                        .foregroundColor(iconColor)
+                }
+
+                // Title with modern typography
                 Text(title)
-                    .font(.system(size: 16, weight: .medium))
-                    .foregroundColor(.primary)
+                    .font(DesignTokens.Typography.callout)
+                    .fontWeight(.semibold)
+                    .foregroundColor(DesignTokens.Colors.primaryText)
 
                 Spacer()
             }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 16)
-            .background(Color.white)
-            .cornerRadius(16)
-            .shadow(color: .black.opacity(0.08), radius: 4, x: 0, y: 2)
+            .padding(.horizontal, DesignTokens.Spacing.xl)
+            .padding(.vertical, DesignTokens.Spacing.lg)
+            .background(DesignTokens.Colors.cardBackground)
+            .cornerRadius(DesignTokens.CornerRadius.large)
+            .floatingCard()
         }
         .buttonStyle(.plain)
+        .scaleEffect(1.0)
+        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: UUID().uuidString)
     }
 }
 
@@ -54,7 +65,7 @@ struct MainScreenRow: View {
         ) {}
 
         Divider()
-            .padding(.leading, 52)
+                .padding(.leading, DesignTokens.Spacing.xxxl)
 
         MainScreenRow(
             title: "Audio File",
@@ -64,7 +75,7 @@ struct MainScreenRow: View {
         ) {}
 
         Divider()
-            .padding(.leading, 52)
+                .padding(.leading, DesignTokens.Spacing.xxxl)
 
         MainScreenRow(
             title: "PDF & Text File",
@@ -74,7 +85,7 @@ struct MainScreenRow: View {
         ) {}
 
         Divider()
-            .padding(.leading, 52)
+                .padding(.leading, DesignTokens.Spacing.xxxl)
 
         MainScreenRow(
             title: "Input Text",
@@ -84,7 +95,7 @@ struct MainScreenRow: View {
         ) {}
 
         Divider()
-            .padding(.leading, 52)
+                .padding(.leading, DesignTokens.Spacing.xxxl)
 
         MainScreenRow(
             title: "Web Link",
@@ -93,5 +104,5 @@ struct MainScreenRow: View {
             backgroundColor: Color(red: 0.95, green: 0.9, blue: 1.0)
         ) {}
     }
-    .background(Color(.systemGroupedBackground))
+    .background(DesignTokens.Colors.tertiaryBackground)
 }

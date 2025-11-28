@@ -21,53 +21,58 @@ struct TextNoteView: View {
     var body: some View {
         NavigationView {
             ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
+                VStack(alignment: .leading, spacing: DesignTokens.Spacing.xl) {
                     // Title input section
-                    VStack(alignment: .leading, spacing: 8) {
+                    VStack(alignment: .leading, spacing: DesignTokens.Spacing.sm) {
                         Text("Note Title")
-                            .font(.headline)
-                            .foregroundColor(.primary)
+                            .font(DesignTokens.Typography.callout)
+                            .foregroundColor(DesignTokens.Colors.primaryText)
 
                         TextField("Enter note title...", text: $title)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .modernTextField()
                     }
-                    .padding(.horizontal)
+                    .padding(.horizontal, DesignTokens.Spacing.lg)
 
                     // Content input section
-                    VStack(alignment: .leading, spacing: 8) {
+                    VStack(alignment: .leading, spacing: DesignTokens.Spacing.sm) {
                         HStack {
                             Text("Note Content")
-                                .font(.headline)
-                                .foregroundColor(.primary)
+                                .font(DesignTokens.Typography.callout)
+                                .foregroundColor(DesignTokens.Colors.primaryText)
 
                             Spacer()
 
                             Text("\(content.count) characters")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
+                                .font(DesignTokens.Typography.caption)
+                                .foregroundColor(DesignTokens.Colors.tertiaryText)
                         }
 
                         ZStack(alignment: .topLeading) {
-                            RoundedRectangle(cornerRadius: 10)
-                                .fill(Color(.systemGray6))
+                            RoundedRectangle(cornerRadius: DesignTokens.CornerRadius.medium)
+                                .fill(DesignTokens.Colors.secondaryBackground)
                                 .frame(minHeight: 300)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: DesignTokens.CornerRadius.medium)
+                                        .stroke(DesignTokens.Colors.tertiaryBackground, lineWidth: 1)
+                                )
 
                             if content.isEmpty {
                                 Text("Start typing your note content...")
-                                    .foregroundColor(.secondary)
-                                    .padding()
+                                    .foregroundColor(DesignTokens.Colors.tertiaryText)
+                                    .padding(DesignTokens.Spacing.md)
                             }
 
                             TextEditor(text: $content)
-                                .padding(8)
+                                .padding(DesignTokens.Spacing.sm)
                                 .background(Color.clear)
                                 .scrollContentBackground(.hidden)
+                                .font(DesignTokens.Typography.body)
                         }
                     }
-                    .padding(.horizontal)
+                    .padding(.horizontal, DesignTokens.Spacing.lg)
 
                     // Action buttons
-                    HStack(spacing: 20) {
+                    HStack(spacing: DesignTokens.Spacing.xl) {
                         // Cancel button
                         Button("Cancel") {
                             dismiss()

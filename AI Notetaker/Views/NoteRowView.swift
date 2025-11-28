@@ -12,38 +12,45 @@ struct NoteRowView: View {
     let note: Note
 
     var body: some View {
-        HStack(spacing: 12) {
-            Image(systemName: note.noteTypeEnum.systemImage)
-                .foregroundColor(note.noteTypeEnum.systemImageColor)
-                .font(.title2)
-                .frame(width: 30, height: 30)
+        HStack(spacing: DesignTokens.Spacing.md) {
+            // Modern icon with background
+            ZStack {
+                RoundedRectangle(cornerRadius: DesignTokens.CornerRadius.medium)
+                    .fill(note.noteTypeEnum.systemImageColor.opacity(0.15))
+                    .frame(width: 44, height: 44)
 
-            VStack(alignment: .leading, spacing: 4) {
+                Image(systemName: note.noteTypeEnum.systemImage)
+                    .foregroundColor(note.noteTypeEnum.systemImageColor)
+                    .font(.system(size: 18, weight: .medium))
+            }
+
+            VStack(alignment: .leading, spacing: DesignTokens.Spacing.xs) {
                 Text(note.title ?? "Untitled Note")
-                    .font(.headline)
-                    .foregroundColor(.primary)
+                    .font(DesignTokens.Typography.callout)
+                    .foregroundColor(DesignTokens.Colors.primaryText)
 
                 Text(note.content ?? "")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
+                    .font(DesignTokens.Typography.footnote)
+                    .foregroundColor(DesignTokens.Colors.secondaryText)
                     .lineLimit(1)
 
-                HStack {
+                HStack(spacing: DesignTokens.Spacing.xs) {
                     Text(note.timestamp!, formatter: dateFormatter)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                        .font(DesignTokens.Typography.caption)
+                        .foregroundColor(DesignTokens.Colors.tertiaryText)
 
                     if note.noteTypeEnum == .audio && note.duration > 0 {
                         Text("• \(note.duration, specifier: "%.0f")s")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
+                            .font(DesignTokens.Typography.caption)
+                            .foregroundColor(DesignTokens.Colors.tertiaryText)
                     }
                 }
             }
 
-            Spacer()
+            Spacer(minLength: DesignTokens.Spacing.sm)
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, DesignTokens.Spacing.xs)
+        .contentShape(Rectangle())
     }
 }
 
