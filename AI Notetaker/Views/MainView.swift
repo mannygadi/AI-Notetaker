@@ -56,7 +56,11 @@ struct MainView: View {
                             FilterHeaderTabs(
                                 selectedFilter: $selectedFilter,
                                 selectedFolder: $selectedFolder,
-                                notes: Array(notes)
+                                notes: Array(notes),
+                                onCreateFolder: { folderName in
+                                    // Create folder and update selected folder
+                                    selectedFolder = folderName
+                                }
                             )
 
                             // Filtered notes section

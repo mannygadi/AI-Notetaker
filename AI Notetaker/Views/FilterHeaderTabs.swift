@@ -11,9 +11,21 @@ struct FilterHeaderTabs: View {
     @Binding var selectedFilter: NoteFilterType
     @Binding var selectedFolder: String
     @State private var searchText: String = ""
-    @State private var showingFolderAlert = false
-    @State private var newFolderName: String = ""
+    @State private var showingFolderCreateScreen = false
     let notes: [Note]
+
+    // Folder creation callback
+    let onCreateFolder: (String) -> Void
+
+    init(selectedFilter: Binding<NoteFilterType>,
+         selectedFolder: Binding<String>,
+         notes: [Note],
+         onCreateFolder: @escaping (String) -> Void) {
+        self._selectedFilter = selectedFilter
+        self._selectedFolder = selectedFolder
+        self.notes = notes
+        self.onCreateFolder = onCreateFolder
+    }
 
     // Computed filtered notes count for each tab
     private var allNotesCount: Int {
@@ -69,7 +81,8 @@ struct FilterHeaderTabs: View {
             // Folder selection row
             HStack {
                 Button(action: {
-                                    }) {
+                    showingFolderCreateScreen = true
+                }) {
                     HStack(spacing: 8) {
                         Image(systemName: "folder")
                             .font(.system(size: 16, weight: .medium))
@@ -114,6 +127,13 @@ struct FilterHeaderTabs: View {
             .padding(.bottom, 16)
         }
         .background(Color(.systemBackground))
+            .sheet(isPresented: $showingFolderCreateScreen) {
+                FolderCreateScreen(
+                    onCreateFolder: { folderName in
+                        onCreateFolder(folderName)
+                    }
+                )
+            }
     }
 
     private func countForFilter(_ filterType: NoteFilterType) -> Int {
@@ -204,7 +224,10 @@ struct FilterTab: View {
         FilterHeaderTabs(
             selectedFilter: .constant(.all),
             selectedFolder: .constant("Default"),
-            notes: []
+            notes: [],
+            onCreateFolder: { folderName in
+                print("Creating folder: \(folderName)")
+            }
         )
 
         Spacer()
